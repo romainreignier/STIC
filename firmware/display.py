@@ -1,6 +1,7 @@
 import busio
 
 try:
+    # noinspection PyUnresolvedReferences
     from typing import Optional
 except ImportError:
     pass

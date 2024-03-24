@@ -14,8 +14,11 @@ import microcontroller
 try:
     # we try to import typing, this fails on circuitpython but gives us code completion in editors
     import typing
+    # noinspection PyUnresolvedReferences
     from . import config
+    # noinspection PyUnresolvedReferences
     from . import display
+    # noinspection PyUnresolvedReferences
     from . import hardware
 except ImportError:
     pass
@@ -59,7 +62,7 @@ def json_test():
 
 
 # noinspection PyUnusedLocal
-async def menu_item_test(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def menu_item_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     from .display import font_20
     for i in range(5):
         await asyncio.sleep(1)
@@ -68,7 +71,7 @@ async def menu_item_test(devices: hardware.Hardware, cfg: config.Config, disp: d
         gc.collect()
 
 
-async def battery_test(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def battery_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     from . import measure
     prev_timeout = cfg.timeout
     try:

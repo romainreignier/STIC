@@ -40,7 +40,7 @@ cal = None
 accuracy: Optional[float] = None
 
 
-async def calibrate_sensors(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def calibrate_sensors(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     from . import measure
     prelude = "Take a series of\r\nreadings, press\r\nA for a leg,\r\nB to finish"
     reminder = "Ideally at least 24\r\nWith two groups\r\nin same direction"
@@ -50,7 +50,7 @@ async def calibrate_sensors(devices: hardware.Hardware, cfg: config.Config, disp
 
 
 # noinspection PyUnusedLocal
-async def reset_to_calibrate(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def reset_to_calibrate(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     disp.show_info("""
         Resetting to run
         calibration. The
@@ -89,7 +89,7 @@ def calibrate_if_due():
         return
 
 
-async def show_cal_results(devices: hardware.Hardware, cfg: config.Config,
+async def show_cal_results(devices: hardware.HardwareBase, cfg: config.Config,
                            disp: display.Display):
     global cal, accuracy
     if isinstance(cal, Exception):
@@ -117,7 +117,7 @@ async def show_cal_results(devices: hardware.Hardware, cfg: config.Config,
     cal = None
 
 
-async def calibrate_distance(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def calibrate_distance(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     devices.laser_enable(True)
     disp.show_info("Place device\r\n1m from an object\r\nand press A")
     await devices.button_a.wait(Button.SINGLE)

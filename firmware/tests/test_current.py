@@ -1,15 +1,16 @@
 # noinspection PyPackageRequirements
 import alarm
-import pins
 import _bleio
 import board
 import time
-import hardware
 import asyncio
+
+from firmware import version
+from firmware import pins
 
 
 async def runner():
-    with hardware.Hardware():
+    with version.get_device():
         await asyncio.sleep(0.3)
 
 

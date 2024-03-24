@@ -31,7 +31,7 @@ ERROR_MESSAGES: Dict[type, str] = {
 }
 
 
-async def measure(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def measure(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     """
     This is the main measurement task
     :return:
@@ -91,7 +91,7 @@ async def measure(devices: hardware.Hardware, cfg: config.Config, disp: display.
             disp.update_measurement(readings.current, readings.current_reading, showing_extents)
 
 
-async def get_raw_measurement(devices: hardware.Hardware, disp: display.Display, with_laser: bool = True):
+async def get_raw_measurement(devices: hardware.HardwareBase, disp: display.Display, with_laser: bool = True):
     logger.info("Taking a reading")
     try:
         disp.oled.sleep()
@@ -113,7 +113,7 @@ async def get_raw_measurement(devices: hardware.Hardware, disp: display.Display,
     return mag, grav, distance
 
 
-async def take_reading(devices: hardware.Hardware,
+async def take_reading(devices: hardware.HardwareBase,
                        cfg: config.Config,
                        disp: display.Display) -> bool:
     # take a reading
@@ -121,10 +121,12 @@ async def take_reading(devices: hardware.Hardware,
         mag, grav, distance = await get_raw_measurement(devices, disp, True)
         if cfg.calib is None:
             raise NotCalibrated()
+        # noinspection PyTypeChecker
         azimuth, inclination, _ = cfg.calib.get_angles(mag, grav)
         distance += cfg.laser_cal
         logger.debug(f"Distance: {distance}m")
         if cfg.anomaly_strictness is not None:
+            # noinspection PyTypeChecker
             cfg.calib.raise_if_anomaly(mag, grav, cfg.anomaly_strictness)
     except tuple(ERROR_MESSAGES.keys()) as exc:
         for key in ERROR_MESSAGES.keys():
@@ -187,7 +189,7 @@ async def take_multiple_readings(devices, disp, fname, prelude, reminder):
 
 
 # noinspection PyUnusedLocal
-async def save_multiple_shots(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def save_multiple_shots(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     prelude = "Press A\r\nto start recording\r\nPress B to stop"
     reminder = "Press B to stop"
     fname = "debug_shots.json"

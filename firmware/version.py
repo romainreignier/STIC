@@ -2,7 +2,7 @@ import binascii
 
 __version__ = "1.2.0"
 
-import layouts
+from . import layouts
 
 try:
     # noinspection PyUnresolvedReferences
@@ -11,6 +11,8 @@ except ImportError:
     pass
 
 LAYOUTS = {(1, 0, 0): layouts.layout_1}
+DEVICES = {(1, 0, 0): "hardware_v1",
+           (1, 1, 0): "hardware_v1"}
 
 ADJECTIVES = [
     "Angry",
@@ -78,5 +80,7 @@ def get_layout() -> layouts.Layout:
 
 
 def get_device():
-    from .hardware import Hardware
-    return Hardware()
+    dev = DEVICES[get_hw_version()]
+    mod = __import__(f"firmware.versions.{dev}")
+    module = getattr(mod.versions, dev)
+    return module.Hardware()

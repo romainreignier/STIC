@@ -146,12 +146,14 @@ while True:
 
 print("Wiping CircuitPython dir")
 fw_path = os.path.join(path, "firmware")
+versions_path = os.path.join(fw_path, "versions")
 
 if not options.skip_tests:
     run_tests()
 
 clear_folder(path)
 os.mkdir(fw_path)
+os.mkdir(versions_path)
 print("Copying fonts")
 shutil.copytree("../fonts", os.path.join(path, "fonts"))
 print("Copying images")
@@ -161,6 +163,8 @@ shutil.copy("manual.pdf", path)
 print("Copying python files")
 for f in glob.glob("../*.py"):
     shutil.copy(f, fw_path)
+for f in glob.glob("../versions/*.py"):
+    shutil.copy(f, versions_path)
 shutil.copy("safemode.py", path)
 shutil.copy("boot.py", path)
 shutil.copy("code.py", path)

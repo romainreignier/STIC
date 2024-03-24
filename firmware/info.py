@@ -8,7 +8,7 @@ from .version import get_long_name, get_short_name, get_sw_version, get_hw_versi
 
 
 # noinspection PyUnusedLocal
-async def raw_readings(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def raw_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     while True:
         try:
             await asyncio.wait_for(devices.button_a.wait_for_click(), 0.5)
@@ -24,7 +24,7 @@ async def raw_readings(devices: hardware.Hardware, cfg: config.Config, disp: dis
         disp.show_info(text)
 
 
-async def calibrated_readings(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def calibrated_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     if cfg.calib is None:
         disp.show_info("Device not\r\ncalibrated")
         await devices.button_a.wait_for_click()
@@ -37,6 +37,7 @@ async def calibrated_readings(devices: hardware.Hardware, cfg: config.Config, di
             pass
         grav = devices.accelerometer.acceleration
         mag = devices.magnetometer.magnetic
+        # noinspection PyTypeChecker
         mag_strength, grav_strength = cfg.calib.get_field_strengths(mag, grav)
         grav = cfg.calib.grav.apply(grav)
         mag = cfg.calib.mag.apply(mag)
@@ -48,7 +49,7 @@ async def calibrated_readings(devices: hardware.Hardware, cfg: config.Config, di
 
 
 # noinspection PyTypeChecker
-async def orientation(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def orientation(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     if cfg.calib is None:
         disp.show_info("Device not\r\ncalibrated")
         await devices.button_a.wait_for_click()
@@ -73,7 +74,7 @@ async def orientation(devices: hardware.Hardware, cfg: config.Config, disp: disp
 
 
 # noinspection PyUnusedLocal
-async def device(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
+async def device(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
     import gc
     gc.collect()
     mem_free = gc.mem_free()

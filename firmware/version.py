@@ -75,3 +75,8 @@ def get_hw_version_as_str() -> str:
 
 def get_layout() -> layouts.Layout:
     return LAYOUTS[get_hw_version()]
+
+
+def get_device():
+    from .hardware import Hardware
+    return Hardware()

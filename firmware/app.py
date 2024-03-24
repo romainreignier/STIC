@@ -10,6 +10,7 @@ from async_button import Button
 # noinspection PyPackageRequirements
 from watchdog import WatchDogMode
 
+from . import version
 from . import calibrate
 from .data import readings
 from .measure import measure, take_reading
@@ -23,7 +24,6 @@ except ImportError:
     pass
 
 
-from .import hardware
 from .config import Config
 from .debug import logger
 
@@ -38,7 +38,7 @@ class App:
 
     def __init__(self, mode=MEASURE):
         check_mem("creating app")
-        self.devices = hardware.Hardware()
+        self.devices = version.get_device()
         self.config = Config.load()
         self.display = self.devices.create_display(self.config)
         self.mode = mode

@@ -1,4 +1,5 @@
 import json
+from . import version
 
 try:
     # noinspection PyUnresolvedReferences
@@ -11,13 +12,13 @@ from mag_cal import Calibration, Strictness
 
 _GRADS_PER_DEGREE = 400 / 360.0
 _CONFIG_FILE = "/config.json"
-_DEFAULT_AXES_MAG = "+X+Y-Z"
-_DEFAULT_AXES_GRAV = "-Y-X+Z"
 _FEET_PER_METRE = 3.28084
 
 HARD_STRICTNESS = Strictness(mag=2.0, grav=1.5, dip=3.0)
 
 SOFT_STRICTNESS = Strictness(mag=5.0, grav=3.0, dip=5.0)
+
+layout = version.get_layout()
 
 
 class Config:
@@ -30,10 +31,10 @@ class Config:
                  timeout: int = 60,
                  angles: int = DEGREES,
                  units: int = METRIC,
-                 mag_axes: str = _DEFAULT_AXES_MAG,
-                 grav_axes: str = _DEFAULT_AXES_GRAV,
+                 mag_axes: str = layout.mag_axes,
+                 grav_axes: str = layout.grav_axes,
                  anomaly_strictness: Strictness = SOFT_STRICTNESS,
-                 laser_cal: int = 0.157,
+                 laser_cal: int = layout.laser_offset,
                  save_readings: bool = False,
                  low_precision: bool = False,
                  extended: bool = False,

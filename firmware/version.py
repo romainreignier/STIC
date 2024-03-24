@@ -1,13 +1,16 @@
 import binascii
 
 __version__ = "1.2.0"
-__hw_version__ = "1.0.0"
+
+import layouts
 
 try:
     # noinspection PyUnresolvedReferences
     from typing import Tuple
 except ImportError:
     pass
+
+LAYOUTS = {(1, 0, 0): layouts.layout_1}
 
 ADJECTIVES = [
     "Angry",
@@ -57,7 +60,7 @@ def get_sw_version() -> str:
     return __version__
 
 
-def get_hw_version() -> Tuple[int]:
+def get_hw_version() -> Tuple[int, int, int]:
     import microcontroller
     version = tuple(microcontroller.nvm[-3:])
     if version == (255, 255, 255):
@@ -68,3 +71,7 @@ def get_hw_version() -> Tuple[int]:
 def get_hw_version_as_str() -> str:
     v = get_hw_version()
     return ".".join(str(x) for x in v)
+
+
+def get_layout() -> layouts.Layout:
+    return LAYOUTS[get_hw_version()]

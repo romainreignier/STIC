@@ -123,6 +123,8 @@ def run_tests():
         exit()
     with serial.Serial(ser_port) as ser:
         shutil.copy("../pins.py", fw_path)
+        shutil.copy("../version.py", fw_path)
+        shutil.copy("../layouts.py", fw_path)
         shutil.copyfile("fw_test.py", os.path.join(path, "code.py"))
         # copy full firmware over
         while True:

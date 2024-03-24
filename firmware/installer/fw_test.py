@@ -13,7 +13,10 @@ import pwmio
 import atexit
 
 # noinspection PyUnresolvedReferences
-import firmware.pins as pins
+import firmware.version as version
+layout = version.get_layout((1,0,0))
+pins = version.get_pins(layout)
+
 
 print("Checking voltage")
 bat = seeed_xiao_nrf52840.Battery()

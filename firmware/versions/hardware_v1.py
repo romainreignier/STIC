@@ -14,13 +14,12 @@ import seeed_xiao_nrf52840
 from .. import bluetooth
 from .. import config
 from .. import invertingpwmio
-from .. import pins
 from ..debug import logger
 from ..hardware import HardwareBase
 
 
 class Hardware(HardwareBase):
-    def __init__(self):
+    def __init__(self, pins):
         logger.debug("Initialising hardware")
         import displayio
         displayio.release_displays()

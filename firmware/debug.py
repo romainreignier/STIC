@@ -62,8 +62,8 @@ def json_test():
 
 
 # noinspection PyUnusedLocal
-async def menu_item_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
-    from .display import font_20
+async def menu_item_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
+    from versions.display128x64 import font_20
     for i in range(5):
         await asyncio.sleep(1)
         # noinspection PyProtectedMember
@@ -71,7 +71,7 @@ async def menu_item_test(devices: hardware.HardwareBase, cfg: config.Config, dis
         gc.collect()
 
 
-async def battery_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def battery_test(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     from . import measure
     prev_timeout = cfg.timeout
     try:

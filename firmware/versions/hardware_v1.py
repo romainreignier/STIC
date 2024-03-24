@@ -52,8 +52,23 @@ class Hardware(HardwareBase):
         atexit.register(self._atexit_handler)
 
     def create_display(self, cfg: config.Config):
-        from .. import display
-        return display.Display(self._i2c, cfg)
+        try:
+            # try to load using 9.0 style, fall back to 8.x style
+            from i2cdisplaybus import I2CDisplayBus as I2CDisplay
+        except ImportError:
+            from displayio import I2CDisplay
+        from . import display128x64
+        import adafruit_displayio_sh1106
+        bus = I2CDisplay(self._i2c, device_address=0x3c)
+        # noinspection PyTypeChecker
+        oled = adafruit_displayio_sh1106.SH1106(bus,
+                                                width=display128x64.WIDTH,
+                                                height=display128x64.HEIGHT,
+                                                rotation=0,
+                                                auto_refresh=False,
+                                                colstart=2)
+
+        return display128x64.Display(oled, cfg)
 
     def laser_enable(self, value: bool) -> None:
         self._las_en_pin.value = value

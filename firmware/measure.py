@@ -31,7 +31,7 @@ ERROR_MESSAGES: Dict[type, str] = {
 }
 
 
-async def measure(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def measure(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     """
     This is the main measurement task
     :return:
@@ -91,10 +91,10 @@ async def measure(devices: hardware.HardwareBase, cfg: config.Config, disp: disp
             disp.update_measurement(readings.current, readings.current_reading, showing_extents)
 
 
-async def get_raw_measurement(devices: hardware.HardwareBase, disp: display.Display, with_laser: bool = True):
+async def get_raw_measurement(devices: hardware.HardwareBase, disp: display.DisplayBase, with_laser: bool = True):
     logger.info("Taking a reading")
     try:
-        disp.oled.sleep()
+        disp.sleep()
         if with_laser:
             distance = await asyncio.wait_for(devices.laser_measure(), LASER_TIMEOUT) / 1000
         else:
@@ -109,13 +109,13 @@ async def get_raw_measurement(devices: hardware.HardwareBase, disp: display.Disp
         await asyncio.sleep(0.1)
         await devices.laser_on(True)
     finally:
-        disp.oled.wake()
+        disp.sleep(wake=True)
     return mag, grav, distance
 
 
 async def take_reading(devices: hardware.HardwareBase,
                        cfg: config.Config,
-                       disp: display.Display) -> bool:
+                       disp: display.DisplayBase) -> bool:
     # take a reading
     try:
         mag, grav, distance = await get_raw_measurement(devices, disp, True)
@@ -189,7 +189,7 @@ async def take_multiple_readings(devices, disp, fname, prelude, reminder):
 
 
 # noinspection PyUnusedLocal
-async def save_multiple_shots(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def save_multiple_shots(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     prelude = "Press A\r\nto start recording\r\nPress B to stop"
     reminder = "Press B to stop"
     fname = "debug_shots.json"

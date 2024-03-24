@@ -8,7 +8,7 @@ from .version import get_long_name, get_short_name, get_sw_version, get_hw_versi
 
 
 # noinspection PyUnusedLocal
-async def raw_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def raw_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     while True:
         try:
             await asyncio.wait_for(devices.button_a.wait_for_click(), 0.5)
@@ -24,7 +24,7 @@ async def raw_readings(devices: hardware.HardwareBase, cfg: config.Config, disp:
         disp.show_info(text)
 
 
-async def calibrated_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def calibrated_readings(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     if cfg.calib is None:
         disp.show_info("Device not\r\ncalibrated")
         await devices.button_a.wait_for_click()
@@ -49,7 +49,7 @@ async def calibrated_readings(devices: hardware.HardwareBase, cfg: config.Config
 
 
 # noinspection PyTypeChecker
-async def orientation(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def orientation(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     if cfg.calib is None:
         disp.show_info("Device not\r\ncalibrated")
         await devices.button_a.wait_for_click()
@@ -74,7 +74,7 @@ async def orientation(devices: hardware.HardwareBase, cfg: config.Config, disp: 
 
 
 # noinspection PyUnusedLocal
-async def device(devices: hardware.HardwareBase, cfg: config.Config, disp: display.Display):
+async def device(devices: hardware.HardwareBase, cfg: config.Config, disp: display.DisplayBase):
     import gc
     gc.collect()
     mem_free = gc.mem_free()

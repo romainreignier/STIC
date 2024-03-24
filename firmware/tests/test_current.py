@@ -5,8 +5,8 @@ import board
 import time
 import asyncio
 
-from firmware import version
-from firmware import pins
+import version
+import pins
 
 
 async def runner():

@@ -21,11 +21,13 @@ from . import utils
 from . import config
 from .debug import logger
 
+# import display and hardware only for type checking - does not import on device
 try:
     # noinspection PyUnresolvedReferences
-    # import display and hardware only for type checking - does not import on device
     import typing
+    # noinspection PyUnresolvedReferences
     from . import display
+    # noinspection PyUnresolvedReferences
     from . import hardware
 except ImportError:
     pass

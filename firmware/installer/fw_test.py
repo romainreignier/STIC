@@ -12,6 +12,7 @@ import seeed_xiao_nrf52840
 import pwmio
 import atexit
 
+# noinspection PyUnresolvedReferences
 import firmware.pins as pins
 
 print("Checking voltage")
@@ -82,6 +83,7 @@ drdy_io = digitalio.DigitalInOut(pins.DRDY)
 drdy_io.direction = digitalio.Direction.INPUT
 
 print("Testing magnetometer")
+# noinspection PyTypeChecker
 magnetometer = rm3100.RM3100_I2C(i2c, drdy_pin=drdy_io)
 print(magnetometer.magnetic)
 print("\n")

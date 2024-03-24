@@ -6,8 +6,6 @@ from laser_egismos import LaserError
 # noinspection PyProtectedMember
 from mag_cal import MagneticAnomalyError, DipAnomalyError, GravityAnomalyError, NotCalibrated
 
-LASER_TIMEOUT = 4.5
-
 try:
     # noinspection PyUnresolvedReferences
     from typing import Dict
@@ -20,6 +18,8 @@ from . import hardware
 from .data import readings, Leg
 from .debug import logger
 from .utils import check_mem
+
+LASER_TIMEOUT = 4.5
 
 ERROR_MESSAGES: Dict[type, str] = {
     LaserError: "Laser\nRead\nFailed",
@@ -60,7 +60,7 @@ async def measure(devices: hardware.Hardware, cfg: config.Config, disp: display.
             devices.button_b.last_click = Button.SINGLE
         else:
             btn, click = await devices.both_buttons.wait(a=(Button.SINGLE, Button.LONG),
-                                                     b=(Button.SINGLE, Button.DOUBLE))
+                                                         b=(Button.SINGLE, Button.DOUBLE))
         check_mem("button pressed")
         if btn == "a":
             if click == Button.SINGLE:
@@ -111,6 +111,7 @@ async def get_raw_measurement(devices: hardware.Hardware, disp: display.Display,
     finally:
         disp.oled.wake()
     return mag, grav, distance
+
 
 async def take_reading(devices: hardware.Hardware,
                        cfg: config.Config,
@@ -184,6 +185,8 @@ async def take_multiple_readings(devices, disp, fname, prelude, reminder):
     except OSError:
         pass
 
+
+# noinspection PyUnusedLocal
 async def save_multiple_shots(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
     prelude = "Press A\r\nto start recording\r\nPress B to stop"
     reminder = "Press B to stop"

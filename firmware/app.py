@@ -1,6 +1,8 @@
 import asyncio
+# noinspection PyPackageRequirements
 import supervisor
 import traceback
+# noinspection PyPackageRequirements
 from watchdog import WatchDogMode
 
 import mag_cal
@@ -24,7 +26,7 @@ except ImportError:
 
 from .import hardware
 from .config import Config
-from .debug import logger, INFO
+from .debug import logger
 
 
 class App:
@@ -249,6 +251,7 @@ class App:
         check_mem("leaving app")
         return clean_shutdown
 
+    # noinspection PyUnusedLocal
     def exception_handler(self, loop, context):
         logger.info("Exception received")
         self.exception_context.update(context)

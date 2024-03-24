@@ -7,10 +7,11 @@ import adafruit_logging
 import os
 
 import microcontroller
+
 # noinspection PyPackageRequirements
 
+# noinspection PyUnresolvedReferences
 try:
-    # noinspection PyUnresolvedReferences
     # we try to import typing, this fails on circuitpython but gives us code completion in editors
     import typing
     from . import config
@@ -28,8 +29,6 @@ elif "INFO" in files:
     logger.setLevel(adafruit_logging.INFO)
 else:
     logger.setLevel(adafruit_logging.WARNING)
-#if not storage.getmount("/").readonly:
-#    logger.addHandler(adafruit_logging.FileHandler("log.txt"))
 logger.debug("Starting log")
 
 INFO = adafruit_logging.INFO
@@ -59,12 +58,15 @@ def json_test():
         json.dump({"a": 1}, f)
 
 
+# noinspection PyUnusedLocal
 async def menu_item_test(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
     from .display import font_20
     for i in range(5):
         await asyncio.sleep(1)
+        # noinspection PyProtectedMember
         disp.show_info(f"MENU TEST: {i}\r\nMem_free:{gc.mem_free()}\r\nglyphs: {len(font_20._glyphs)}")
         gc.collect()
+
 
 async def battery_test(devices: hardware.Hardware, cfg: config.Config, disp: display.Display):
     from . import measure
@@ -91,7 +93,7 @@ async def battery_test(devices: hardware.Hardware, cfg: config.Config, disp: dis
             disp.show_big_info(f"Battery\r\n{devices.batt_voltage:4.2f}V\r\n{count}")
             await asyncio.sleep(10)
         with open("battery_test.txt", "w") as f:
-            f.write(f"Took {count} shots over {time.time()-start_time} seconds")
+            f.write(f"Took {count} shots over {time.time() - start_time} seconds")
     finally:
         cfg.timeout = prev_timeout
     await asyncio.sleep(10)

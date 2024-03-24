@@ -1,15 +1,15 @@
 #!/bin/env python3
 
+import argparse
 # This script updates a SAP6
 import glob
+import json
 import os
 import shutil
 import subprocess
-import json
-import sys
 import time
+
 import serial
-import argparse
 
 TTY_SYS_DIR = "/sys/class/tty/"
 
@@ -20,7 +20,6 @@ BOOTLOADER_NAME = "XIAO-SENSE"
 SAP6_NAMES = ['CIRCUITPY', 'SAP6']
 
 RESET_DEVICE = False
-
 
 parser = argparse.ArgumentParser(
     prog="installer.py",
@@ -34,6 +33,8 @@ parser.add_argument("-t", "--skip-tests",
                     action="store_true")
 
 options = parser.parse_args()
+
+
 # noinspection SpellCheckingInspection
 def find_usb_devices():
     results = subprocess.check_output(("lsblk", "-J", "-o", "PATH,MOUNTPOINT,LABEL"))
@@ -94,7 +95,7 @@ def upgrade_firmware():
     cp_dev = get_circuitpython_dir()
     if RESET_DEVICE and cp_dev is not None:
         print("Putting SAP6 in bootloader mode, this will take about 10s")
-        shutil.copy("resetter.py", os.path.join(cp_dev,"code.py"))
+        shutil.copy("resetter.py", os.path.join(cp_dev, "code.py"))
         time.sleep(8)
     else:
         print("Finding SAP6 in bootloader mode")
@@ -110,6 +111,7 @@ def upgrade_firmware():
     print("SAP6 found")
     print("Updating CircuitPython firmware")
     shutil.copyfile(FIRMWARE_FILE, os.path.join(dev['mountpoint'], FIRMWARE_FILE))
+
 
 def run_tests():
     clear_folder(path)
@@ -144,7 +146,6 @@ while True:
 
 print("Wiping CircuitPython dir")
 fw_path = os.path.join(path, "firmware")
-
 
 if not options.skip_tests:
     run_tests()

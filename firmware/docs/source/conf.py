@@ -8,6 +8,7 @@
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+# noinspection PyPep8
 import version as v
 project = 'SAP6'
 # noinspection PyShadowingBuiltins

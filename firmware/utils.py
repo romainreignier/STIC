@@ -114,7 +114,7 @@ MIN_VOLTAGE = 3.5
 MAX_VOLTAGE = 4.2
 
 
-def diskfree():
+def disk_free():
     """
     :return: Disk space available in kB
     """

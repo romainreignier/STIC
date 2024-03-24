@@ -1,4 +1,10 @@
+try:
+    from typing import Optional
+except ImportError:
+    pass
+
 import adafruit_displayio_sh1106
+
 try:
     # try to load using 9.0 style, fall back to 8.x style
     from i2cdisplaybus import I2CDisplayBus as I2CDisplay
@@ -86,8 +92,8 @@ class Display:
             self.azimuth.text = "Extents"
             horizontal = math.cos(math.radians(leg.inclination)) * leg.distance
             vertical = math.sin(math.radians(leg.inclination)) * leg.distance
-            self.inclination.text = "H:"+ self.config.get_distance_text(horizontal)
-            self.distance.text = "V:"+ self.config.get_distance_text(vertical)
+            self.inclination.text = "H:" + self.config.get_distance_text(horizontal)
+            self.distance.text = "V:" + self.config.get_distance_text(vertical)
         else:
             self.azimuth.text = self.config.get_azimuth_text(leg.azimuth)
             self.inclination.text = self.config.get_inclination_text(leg.inclination)
@@ -120,6 +126,7 @@ class Display:
                 self.bt_pending_bitmap[i * 3, 1] = 1
                 self.bt_pending_bitmap[i * 3 + 1, 1] = 1
             self.refresh()
+
     def set_batt_level(self, voltage):
         self.batt_level.value = convert_voltage_to_progress(voltage, 100)
         self.refresh()
@@ -160,7 +167,7 @@ class Display:
             lbl.text = line
         self.show_group(self.measurement_group)
 
-    def show_group(self, group: displayio.Group):
+    def show_group(self, group: Optional[displayio.Group]):
         self.oled.root_group = group
         self.refresh()
 

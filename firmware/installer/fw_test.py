@@ -71,6 +71,8 @@ uart.reset_input_buffer()
 laser = laser_egismos.Laser(uart)
 print(f"{laser.distance}m")
 print("\n")
+laser.set_buzzer(False)
+print(f"Laser buzzer turned off")
 uart.deinit()
 
 print("Testing i2c devices")

@@ -52,7 +52,7 @@ async def menu(devices: hardware.Hardware, cfg: config.Config, disp: display.Dis
     gc.collect()
     devices.laser_enable(True)
     await asyncio.sleep(0.1)
-    await devices.laser.set_laser(False)
+    await devices.laser_on(False)
     items = [
         ("Calibrate", [
             ("Sensors", AsyncAction(calibrate.calibrate_sensors)),

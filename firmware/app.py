@@ -152,8 +152,8 @@ class App:
         # noinspection PyPep8Naming
         CALLBACKS = {
             0x34: lambda: self.bt_quit_now(),
-            0x36: lambda: self.devices.laser.set_laser(True),
-            0x37: lambda: self.devices.laser.set_laser(False),
+            0x36: lambda: self.devices.laser_on(True),
+            0x37: lambda: self.devices.laser_on(False),
             0x38: lambda: take_reading(self.devices, self.config, self.display),
 
         }

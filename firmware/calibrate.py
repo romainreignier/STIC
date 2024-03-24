@@ -123,7 +123,7 @@ async def calibrate_distance(devices: hardware.Hardware, cfg: config.Config, dis
     await asyncio.sleep(1)
     dist = 0
     for i in range(10):
-        dist += await devices.laser.measure()
+        dist += await devices.laser_measure()
         devices.beep_bip()
     dist /= 10.0
     dist = 1000 - dist

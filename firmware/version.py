@@ -4,6 +4,12 @@ import binascii
 __version__ = "1.2.0"
 __hw_version__ = "1.0.0"
 
+try:
+    # noinspection PyUnresolvedReferences
+    from typing import Tuple
+except ImportError:
+    pass
+
 ADJECTIVES = [
     "Angry",
     "Bored",
@@ -52,5 +58,14 @@ def get_sw_version() -> str:
     return __version__
 
 
-def get_hw_version() -> str:
-    return __hw_version__
+def get_hw_version() -> Tuple[int]:
+    import microcontroller
+    version = tuple(microcontroller.nvm[-3:])
+    if version == (255, 255, 255):
+        version = (1, 0, 0)
+    return version
+
+
+def get_hw_version_as_str() -> str:
+    v = get_hw_version()
+    return ".".join(str(x) for x in v)

@@ -82,7 +82,7 @@ async def battery_test(devices: hardware.Hardware, cfg: config.Config, disp: dis
                        clean=True)
         devices.laser_enable(True)
         await asyncio.sleep(0.1)
-        devices.laser.set_laser(True)
+        await devices.laser_on(True)
         await devices.button_a.wait_for_click()
         count = 0
         while devices.batt_voltage > 3.5:

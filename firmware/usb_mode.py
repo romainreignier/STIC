@@ -50,7 +50,7 @@ def usb_charge_monitor():
         disp.show_group(group)
         disconnected_count = 0
         while True:
-            if not devices.battery.charge_status:
+            if not devices.charge_status():
                 progress = BAR_WIDTH
                 status_label.text = "Fully Charged"
                 voltage_label.text = "4.2V"

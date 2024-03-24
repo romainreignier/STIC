@@ -4,7 +4,7 @@ from os import uname
 from . import config
 from . import display
 from . import hardware
-from .version import get_long_name, get_short_name, get_sw_version, get_hw_version
+from .version import get_long_name, get_short_name, get_sw_version, get_hw_version_as_str
 
 
 # noinspection PyUnusedLocal
@@ -80,7 +80,7 @@ async def device(devices: hardware.Hardware, cfg: config.Config, disp: display.D
     text = f"""
         {get_long_name()} ({get_short_name()})
         SW Version: {get_sw_version()}
-        HW: {get_hw_version()} CP: {uname().release}
+        HW: {get_hw_version_as_str()} CP: {uname().release}
         Mem Free: {mem_free}
         """
     disp.show_info(text, clean=True)

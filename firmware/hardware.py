@@ -10,6 +10,7 @@ import seeed_xiao_nrf52840
 import busio
 import digitalio
 
+
 try:
     from typing import Optional
 except ImportError:
@@ -18,8 +19,8 @@ except ImportError:
 from . import invertingpwmio
 from . import bluetooth
 from . import pins
+from . import config
 from .debug import logger
-
 
 # Pin definitions
 
@@ -67,6 +68,10 @@ class Hardware:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.deinit()
+
+    def create_display(self, cfg: config.Config):
+        from . import display
+        return display.Display(self.i2c, cfg)
 
     def laser_enable(self, value: bool) -> None:
         self._las_en_pin.value = value

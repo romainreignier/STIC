@@ -1,19 +1,18 @@
 import asyncio
-# noinspection PyPackageRequirements
-import supervisor
 import traceback
-# noinspection PyPackageRequirements
-from watchdog import WatchDogMode
 
 import mag_cal
 import microcontroller
 # noinspection PyPackageRequirements
+import supervisor
+# noinspection PyPackageRequirements
 from async_button import Button
+# noinspection PyPackageRequirements
+from watchdog import WatchDogMode
 
-from .import calibrate
-from .display import Display
-from .measure import measure, take_reading
+from . import calibrate
 from .data import readings
+from .measure import measure, take_reading
 from .menu import menu
 from .utils import simplify, check_mem
 
@@ -41,7 +40,7 @@ class App:
         check_mem("creating app")
         self.devices = hardware.Hardware()
         self.config = Config.load()
-        self.display = Display(self.devices, self.config)
+        self.display = self.devices.create_display(self.config)
         self.mode = mode
         self.menu_action = None
         self.background_tasks: List[Coroutine] = [

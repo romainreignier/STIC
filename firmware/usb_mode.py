@@ -7,7 +7,6 @@ import displayio
 
 from . import config
 from . import hardware
-from . import display
 from .debug import logger
 from .bitmaps import bitmaps, palette
 from .utils import convert_voltage_to_progress, usb_power_connected
@@ -23,7 +22,7 @@ def usb_charge_monitor():
     logger.debug("Showing Charging symbol")
     with hardware.Hardware() as devices:
         cfg = config.Config.load()
-        disp = display.Display(devices, cfg)
+        disp = devices.create_display(cfg)
         group = displayio.Group()
         battery_bmp = bitmaps['battery']
         battery_tile = displayio.TileGrid(battery_bmp, pixel_shader=palette, x=32, y=14)

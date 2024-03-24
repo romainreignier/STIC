@@ -1,3 +1,5 @@
+import busio
+
 try:
     from typing import Optional
 except ImportError:
@@ -20,7 +22,6 @@ from displayio import TileGrid, Bitmap
 from fruity_menu.menu import Menu
 
 from .config import Config
-from .hardware import Hardware
 from .data import Leg
 from .debug import logger
 from .bitmaps import bitmaps, palette
@@ -34,10 +35,9 @@ class Display:
     MEASURE = 0
     MENU = 1
 
-    def __init__(self, devices: Hardware, config: Config):
-        self.devices = devices
+    def __init__(self, i2c: busio.I2C, config: Config):
         self.config = config
-        bus = I2CDisplay(self.devices.i2c, device_address=0x3c)
+        bus = I2CDisplay(i2c, device_address=0x3c)
         # noinspection PyTypeChecker
         self.oled = adafruit_displayio_sh1106.SH1106(bus, width=WIDTH, height=HEIGHT,
                                                      rotation=0, auto_refresh=False, colstart=2)

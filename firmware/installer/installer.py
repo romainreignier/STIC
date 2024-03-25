@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import time
+import sys
 
 import serial
 
@@ -79,8 +80,10 @@ def clear_folder(path_to_clear):
     try:
         shutil.rmtree(path_to_clear)
     except PermissionError:
-        print("Permission denied")
-
+        pass
+    if len(os.listdir(path_to_clear)) > 0:
+        print("Clear failed: ", os.listdir(path_to_clear))
+        sys.exit(1)
 
 def find_serial_port():
     for tty_file in os.listdir(TTY_SYS_DIR):
@@ -124,7 +127,7 @@ def run_tests():
     ser_port = find_serial_port()
     if ser_port is None:
         print("SERIAL PORT NOT FOUND - EXITING")
-        exit()
+        sys.exit(0)
     with serial.Serial(ser_port) as ser:
         shutil.copy("../pins.py", fw_path)
         shutil.copy("../version.py", fw_path)
@@ -146,15 +149,17 @@ def set_hw_version(major, minor, patch):
     ser_port = find_serial_port()
     if ser_port is None:
         print("SERIAL PORT NOT FOUND - EXITING")
-        exit()
+        sys.exit(0)
     with serial.Serial(ser_port) as ser:
         ser.write(b'\x03')  # send ctrl-C
-        time.sleep(0.5)
+        time.sleep(1.0)
         ser.write(b'\n')  # send return
-        time.sleep(0.5)
+        time.sleep(1.0)
         output = ser.read_all()
         if not output.endswith(b">>> "):
             print("Unable to get to command line - EXITING")
+            print(output.decode())
+            sys.exit(1)
         ser.write(b'import microcontroller\r\n')
         ser.write(b'import supervisor\r\n')
         ser.write(f'microcontroller.nvm[-3:] = bytearray(({major},{minor},{patch}))\r\n'.encode())

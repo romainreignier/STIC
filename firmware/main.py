@@ -26,9 +26,12 @@ from . import usb_mode
 from . import version
 from .utils import usb_power_connected, check_mem
 from .debug import logger, DEBUG
+
 LIGHT_SLEEP_TIMEOUT = 6 * 60 * 60  # light sleep for 6 hours
 
 pins = version.get_pins()
+
+
 def double_click_start() -> bool:
     # first check voltage and return false if too low...
     with seeed_xiao_nrf52840.Battery() as batt:

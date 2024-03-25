@@ -6,7 +6,6 @@ import time
 import asyncio
 
 import version
-import pins
 
 
 async def runner():
@@ -18,6 +17,7 @@ LIGHT_SLEEP_TIMEOUT = 60
 _bleio.adapter.stop_advertising()
 time.sleep(0.1)
 asyncio.run(runner())
+pins = version.get_pins()
 pin_alarm = alarm.pin.PinAlarm(pins.BUTTON_A, value=False, pull=True)
 periph_alarm = alarm.pin.PinAlarm(pins.PERIPH_EN, value=True, pull=True)
 usb_alarm = alarm.pin.PinAlarm(board.CHARGE_STATUS, value=False, pull=False)

@@ -75,20 +75,21 @@ def get_hw_version_as_str() -> str:
     return ".".join(str(x) for x in v)
 
 
-def get_layout(version: Optional[Tuple[int, int, int]]=None) -> layouts.Layout:
+def get_layout(version: Optional[Tuple[int, int, int]] = None) -> layouts.Layout:
     if version is None:
         version = get_hw_version()
     return LAYOUTS[version]
 
-def get_pins(layout: Optional[layouts.Layout]=None):
+
+def get_pins(layout: Optional[layouts.Layout] = None):
     if layout is None:
         layout = get_layout()
     from . import pins
-    pin_group = getattr(pins,layout.pins)
+    pin_group = getattr(pins, layout.pins)
     return pin_group
 
 
-def get_device(version: Optional[Tuple[int, int, int]]=None):
+def get_device(version: Optional[Tuple[int, int, int]] = None):
     layout = get_layout(version)
     dev = layout.hardware
     pins = get_pins(layout)

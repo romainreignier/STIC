@@ -19,6 +19,8 @@ BOOTLOADER_NAME = "XIAO-SENSE"
 
 SAP6_NAMES = ['CIRCUITPY', 'SAP6']
 
+DEFAULT_HW_VERSION = "1.0.0"
+
 RESET_DEVICE = False
 
 parser = argparse.ArgumentParser(
@@ -31,6 +33,20 @@ parser.add_argument("-f", "--skip-firmware",
 parser.add_argument("-t", "--skip-tests",
                     help="Skip the testing section - just install the code",
                     action="store_true")
+parser.add_argument("-c", "--skip-code",
+                    help="Skip the code installation",
+                    action="store_true")
+
+parser.add_argument("-hw", "--hw-version",
+                    help="Specify the hardware version, set to 0 to skip",
+                    default=DEFAULT_HW_VERSION,
+                    action="store")
+
+parser.add_argument("-d", "--debug",
+                    help="Place a DEBUG file in the root directory, putting device in debug mode",
+                    default=DEFAULT_HW_VERSION,
+                    action="store_true")
+
 
 options = parser.parse_args()
 
@@ -59,23 +75,11 @@ def get_circuitpython_dir(rename=False):
 
 
 def clear_folder(path_to_clear):
-    print("Before clear folder:")
-    print(os.listdir(path_to_clear))
+    print(f"Clearing folder {path_to_clear}")
     try:
         shutil.rmtree(path_to_clear)
     except PermissionError:
-        pass
-    # for dir_entry in os.listdir(path_to_clear):
-    #     dir_entry = os.path.join(path_to_clear, dir_entry)
-    #     try:
-    #         if os.path.isdir(dir_entry):
-    #             shutil.rmtree(dir_entry)
-    #         else:
-    #             os.remove(dir_entry)
-    #     except OSError:
-    #         pass
-    print("After clear folder:")
-    print(os.listdir(path_to_clear))
+        print("Permission denied")
 
 
 def find_serial_port():
@@ -136,37 +140,81 @@ def run_tests():
     print("Hardware test successful")
 
 
+def set_hw_version(major, minor, patch):
+    clear_folder(path)
+    print(f"Setting hardware version to {major}.{minor}.{patch}")
+    ser_port = find_serial_port()
+    if ser_port is None:
+        print("SERIAL PORT NOT FOUND - EXITING")
+        exit()
+    with serial.Serial(ser_port) as ser:
+        ser.write(b'\x03')  # send ctrl-C
+        time.sleep(0.5)
+        ser.write(b'\n')  # send return
+        time.sleep(0.5)
+        output = ser.read_all()
+        if not output.endswith(b">>> "):
+            print("Unable to get to command line - EXITING")
+        ser.write(b'import microcontroller\r\n')
+        ser.write(b'import supervisor\r\n')
+        ser.write(f'microcontroller.nvm[-3:] = bytearray(({major},{minor},{patch}))\r\n'.encode())
+        ser.write(b'supervisor.runtime.autoreload = True\r\n')
+        ser.write(b'print("HW VERSION: " + ".".join(str(x) for x in microcontroller.nvm[-3:]))\r\n')
+        time.sleep(1.0)
+        output = ser.read_all()
+        for line in output.splitlines():
+            if line.startswith(b"HW VERSION"):
+                print(line.decode())
+        ser.write(b'\x04')  # send Ctrl-D to start auto running code.py
+
+
+def install_code(debug: bool):
+    clear_folder(path)
+    os.mkdir(fw_path)
+    os.mkdir(versions_path)
+    print("Copying fonts")
+    shutil.copytree("../fonts", os.path.join(path, "fonts"))
+    print("Copying images")
+    shutil.copytree("../images", os.path.join(path, "images"))
+    print("Copying manual")
+    shutil.copy("manual.pdf", path)
+    print("Copying python files")
+    for f in glob.glob("../*.py"):
+        shutil.copy(f, fw_path)
+    for f in glob.glob("../versions/*.py"):
+        shutil.copy(f, versions_path)
+    if debug:
+        print("Setting debug mode")
+        with open(os.path.join(path, "DEBUG"), "w"):
+            pass
+    shutil.copy("safemode.py", path)
+    shutil.copy("boot.py", path)
+    shutil.copy("code.py", path)
+
+
+# first parse HW version
+if options.hw_version == "0":
+    hw_version = None
+else:
+    hw_version = tuple(int(x) for x in options.hw_version.split("."))
+    if len(hw_version) != 3:
+        print(f"Hardware version ({options.hw_version}) must have 3 components")
+        exit()
+
 if not options.skip_firmware:
     upgrade_firmware()
-
 print("Waiting for CircuitPython disc")
+
 while True:
     time.sleep(1)
     path = get_circuitpython_dir(rename=True)
     if path is not None:
         break
-
-print("Wiping CircuitPython dir")
 fw_path = os.path.join(path, "firmware")
 versions_path = os.path.join(fw_path, "versions")
-
+if hw_version is not None:
+    set_hw_version(*hw_version)
 if not options.skip_tests:
     run_tests()
-
-clear_folder(path)
-os.mkdir(fw_path)
-os.mkdir(versions_path)
-print("Copying fonts")
-shutil.copytree("../fonts", os.path.join(path, "fonts"))
-print("Copying images")
-shutil.copytree("../images", os.path.join(path, "images"))
-print("Copying manual")
-shutil.copy("manual.pdf", path)
-print("Copying python files")
-for f in glob.glob("../*.py"):
-    shutil.copy(f, fw_path)
-for f in glob.glob("../versions/*.py"):
-    shutil.copy(f, versions_path)
-shutil.copy("safemode.py", path)
-shutil.copy("boot.py", path)
-shutil.copy("code.py", path)
+if not options.skip_code:
+    install_code(debug=options.debug)

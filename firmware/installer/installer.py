@@ -187,6 +187,7 @@ def install_code(debug: bool):
         print("Setting debug mode")
         with open(os.path.join(path, "DEBUG"), "w"):
             pass
+    print("Installing init files")
     shutil.copy("safemode.py", path)
     shutil.copy("boot.py", path)
     shutil.copy("code.py", path)
@@ -201,20 +202,32 @@ else:
         print(f"Hardware version ({options.hw_version}) must have 3 components")
         exit()
 
-if not options.skip_firmware:
+if options.skip_firmware:
+    print("Skipping firmware installation")
+else:
     upgrade_firmware()
 print("Waiting for CircuitPython disc")
 
 while True:
-    time.sleep(1)
     path = get_circuitpython_dir(rename=True)
     if path is not None:
         break
+    time.sleep(1)
+
 fw_path = os.path.join(path, "firmware")
 versions_path = os.path.join(fw_path, "versions")
-if hw_version is not None:
+
+if hw_version is None:
+    print("Skipping setting hardware version")
+else:
     set_hw_version(*hw_version)
-if not options.skip_tests:
+
+if options.skip_tests:
+    print("Skipping tests")
+else:
     run_tests()
-if not options.skip_code:
+
+if options.skip_code:
+    print("Skipping code installation")
+else:
     install_code(debug=options.debug)

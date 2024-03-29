@@ -18,6 +18,8 @@ FIRMWARE_FILE = "firmware.uf2"
 
 BOOTLOADER_NAME = "XIAO-SENSE"
 
+SAP6_NAMES = ['CIRCUITPY', 'SAP6']
+
 DEFAULT_HW_VERSION = "1.0.0"
 
 RESET_DEVICE = False
@@ -43,7 +45,9 @@ parser.add_argument("-hw", "--hw-version",
 
 parser.add_argument("-d", "--debug",
                     help="Place a DEBUG file in the root directory, putting device in debug mode",
+                    default=DEFAULT_HW_VERSION,
                     action="store_true")
+
 
 options = parser.parse_args()
 

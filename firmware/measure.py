@@ -186,7 +186,6 @@ async def take_multiple_readings(devices, disp, fname, prelude, reminder):
             json.dump({"mag": mags, "grav": gravs}, f)
     except OSError:
         pass
-    return mags, gravs
 
 
 # noinspection PyUnusedLocal

@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 import microcontroller
@@ -154,6 +153,7 @@ class Updater:
 
     async def update(self, text: str):
         from .debug import logger
+        import asyncio
         logger.debug(text)
         self.text += "\r\n" + text
         self.disp.show_info(self.text)
